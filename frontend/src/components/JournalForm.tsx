@@ -92,7 +92,13 @@ export default function JournalForm({ mode, initialData, journalId }: Props) {
         setTimeout(() => navigate(`/jurnal/${journalId}`), 1500)
       }
     } catch (err: any) {
-      setSubmitError(err.response?.data?.error || 'Gagal menyimpan jurnal. Silakan coba lagi.')
+      let msg = 'Gagal menyimpan jurnal. Silakan coba lagi.'
+      const resData = err.response?.data
+      if (typeof resData?.error === 'string') msg = resData.error
+      else if (typeof resData?.error?.message === 'string') msg = resData.error.message
+      else if (typeof resData?.message === 'string') msg = resData.message
+      else if (typeof err.message === 'string') msg = err.message
+      setSubmitError(msg)
     } finally {
       setLoading(false)
     }

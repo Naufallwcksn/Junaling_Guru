@@ -20,7 +20,27 @@ export default function LoginPage() {
       await login(email, password)
       navigate('/jurnal/baru')
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Email atau kata sandi tidak valid.')
+      console.error('Login error:', err)
+      let message = 'Email atau kata sandi tidak valid.'
+
+      const resData = err.response?.data
+      if (resData) {
+        if (typeof resData.error === 'string') {
+          message = resData.error
+        } else if (typeof resData.error?.message === 'string') {
+          message = resData.error.message
+        } else if (typeof resData.message === 'string') {
+          message = resData.message
+        }
+      }
+
+      if (err.response?.status === 404) {
+        message = 'Server Backend tidak ditemukan (404). Silakan pastikan backend sudah di-hosting dan alamat API sudah diatur di environment Vercel (VITE_API_URL).'
+      } else if (!err.response && err.message) {
+        message = `Gagal menghubungi server: ${err.message}`
+      }
+
+      setError(message)
     } finally {
       setLoading(false)
     }
@@ -42,7 +62,7 @@ export default function LoginPage() {
 
         {/* Error */}
         {error && (
-          <div className="bg-red-50 border border-red-300 text-red-700 rounded-lg p-4 mb-6 text-base">
+          <div className="bg-red-50 border border-red-300 text-red-700 rounded-lg p-4 mb-6 text-base leading-relaxed">
             ⚠️ {error}
           </div>
         )}
@@ -79,7 +99,7 @@ export default function LoginPage() {
             </div>
           </div>
           <button type="submit" disabled={loading}
-            className="w-full bg-blue-700 hover:bg-blue-800 disabled:bg-blue-400 text-white font-bold py-3 px-4 rounded-lg text-lg flex items-center justify-center gap-2 transition-colors mt-2">
+            className="w-full bg-blue-700 hover:bg-blue-800 disabled:bg-blue-400 text-white font-bold py-3 px-4 rounded-lg text-lg flex items-center justify-center gap-2 transition-colors mt-2 cursor-pointer">
             <LogIn className="w-5 h-5" />
             {loading ? 'Sedang Masuk...' : 'Masuk ke Aplikasi'}
           </button>

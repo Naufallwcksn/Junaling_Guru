@@ -210,7 +210,15 @@ function UserSection({ currentUserId }: { currentUserId: string }) {
       await api.post('/users', form)
       setForm({ name: '', email: '', password: '', role: 'teacher' })
       setShowForm(false); setError(''); load()
-    } catch (e: any) { setError(e.response?.data?.error || 'Gagal menambah pengguna.') }
+    } catch (e: any) {
+      let msg = 'Gagal menambah pengguna.'
+      const resData = e.response?.data
+      if (typeof resData?.error === 'string') msg = resData.error
+      else if (typeof resData?.error?.message === 'string') msg = resData.error.message
+      else if (typeof resData?.message === 'string') msg = resData.message
+      else if (typeof e.message === 'string') msg = e.message
+      setError(msg)
+    }
   }
 
   async function del(id: string) {
