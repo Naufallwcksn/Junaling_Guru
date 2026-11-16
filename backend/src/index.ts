@@ -13,8 +13,13 @@ const PORT = process.env.PORT || 5000
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
 // Mengizinkan request dari frontend Vercel maupun localhost
+const allowedOrigins = [
+  'https://journaling-guru.vercel.app',
+  'http://localhost:5173',
+]
+
 app.use(cors({
-  origin: true,
+  origin: allowedOrigins,
   credentials: true,
 }))
 app.use(express.json())
