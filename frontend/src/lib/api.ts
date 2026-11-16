@@ -3,7 +3,7 @@ import axios from 'axios'
 // Gunakan URL backend dari env Vercel jika tersedia, atau fallback ke '/api'
 const baseURL = (
   import.meta.env.VITE_API_URL || 'https://jurnal-guru-backend.onrender.com'
-).replace(/\/+$/, '')
+).replace(/\/+$/, '') + '/api'
 
 const api = axios.create({
   baseURL,
